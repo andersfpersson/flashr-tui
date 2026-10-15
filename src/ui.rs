@@ -128,10 +128,8 @@ fn handle_image_step(app: &mut App, key: KeyEvent) -> Option<AppExit> {
         KeyCode::Char('u') if key.modifiers.contains(KeyModifiers::CONTROL) => {
             app.image_input.clear();
         }
-        KeyCode::Char(c) => {
-            if !key.modifiers.contains(KeyModifiers::CONTROL) {
-                app.image_input.push(c);
-            }
+        KeyCode::Char(c) if !key.modifiers.contains(KeyModifiers::CONTROL) => {
+            app.image_input.push(c);
         }
         _ => {}
     }
@@ -259,6 +257,14 @@ fn handle_confirm_step(app: &mut App, key: KeyEvent) -> Option<AppExit> {
                     }
                 }
             }
+        }
+        KeyCode::Char('m') => {
+            app.execute = !app.execute;
+            app.status = if app.execute {
+                "Mode set to EXECUTE (real flash).".to_string()
+            } else {
+                "Mode set to DRY RUN (no writes).".to_string()
+            };
         }
         KeyCode::Char('b') => {
             app.step = Step::Device;
@@ -517,13 +523,20 @@ fn draw_confirm_step(frame: &mut ratatui::Frame, app: &App, area: ratatui::layou
 
     let mode = if app.execute { "EXECUTE" } else { "DRY RUN" };
 
+    let mode_hint = if app.execute {
+        "This will write to the selected device."
+    } else {
+        "Dry-run mode: no data will be written."
+    };
+
     let text = Text::from(vec![
         Line::from("Step 3: Confirm"),
         Line::from(format!("Image : {image}")),
         Line::from(format!("Device: {device}")),
         Line::from(format!("Mode  : {mode}")),
         Line::from(format!("ISO   : {}", iso_info_line(app))),
-        Line::from("Press 'f' to flash, 'b' to go back."),
+        Line::from(mode_hint),
+        Line::from("Press 'f' to continue, 'm' to toggle mode, 'b' to go back."),
     ]);
 
     let block = Block::default().borders(Borders::ALL).title("Confirm");
@@ -619,11 +632,12 @@ fn draw_confirm_wipe_step(frame: &mut ratatui::Frame, app: &App, area: ratatui::
 
 fn draw_flashing_step(frame: &mut ratatui::Frame, app: &App, area: ratatui::layout::Rect) {
     let (percent, label) = if let Some(total) = app.flash_total {
-        let percent = if total == 0 {
-            0
-        } else {
-            (((app.flash_done.saturating_mul(100)) / total) as u16).min(100)
-        };
+        let percent = app
+            .flash_done
+            .saturating_mul(100)
+            .checked_div(total)
+            .map(|p| (p as u16).min(100))
+            .unwrap_or(0);
         let label = format!("{} / {} bytes", app.flash_done, total);
         (percent, label)
     } else {
@@ -698,7 +712,7 @@ fn status_line(app: &App) -> Line<'static> {
     let keys = match app.step {
         Step::Image => "Up/Down/PgUp/PgDn=nav  Enter=open/select  Tab=filter  Ctrl+H=hidden  Ctrl+U=clear  q=quit",
         Step::Device => "Up/Down=select  Enter=next  r=rescan  a=all  b=back  q=quit",
-        Step::Confirm => "f=flash  b=back  q=quit",
+        Step::Confirm => "f=continue  m=toggle mode  b=back  q=quit",
         Step::ConvertIso => "y=convert  n=cancel  q=quit",
         Step::ConfirmWipe => "y=confirm wipe  n=cancel  q=quit",
         Step::Flashing => "Flashing... please wait",

@@ -540,7 +540,7 @@ fn wipe_device_if_needed(
             dev.children
                 .iter()
                 .filter(|c| c.r#type == "part")
-                .map(|c| format!("/dev/{}", c.name))
+                .map(|c| c.name.clone())
                 .collect::<Vec<_>>()
         })
         .collect();
