@@ -113,7 +113,8 @@ flashr-tui --image ~/Downloads/nixos.iso --device /dev/sdb --execute
 - **b** – Back to image selection
 
 #### Step 3: Confirm
-- **f** – Flash (or dry-run if not `--execute`)
+- **f** – Continue (flash in execute mode, or dry-run otherwise)
+- **m** – Toggle mode between **DRY RUN** and **EXECUTE**
 - **b** – Back to device selection
 
 #### Flashing
@@ -409,4 +410,3 @@ Contributions are welcome! Please:
 3. Make your changes
 4. Run `cargo fmt` and `cargo clippy`
 5. Submit a pull request
-
