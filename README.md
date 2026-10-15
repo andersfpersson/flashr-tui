@@ -52,7 +52,49 @@ cargo install --path .
 
 ### Download Pre-built Binary
 
-[Add future binary releases here once available]
+Primary download channel: **[GitHub Releases](https://github.com/andersfpersson/flashr-tui/releases)**.
+
+Every `v*` tag automatically publishes signed release assets with checksums.
+
+| OS | Architecture | Target triple | Artifact name pattern |
+|----|--------------|---------------|------------------------|
+| Linux | x86_64 | `x86_64-unknown-linux-gnu` | `flashr-tui-vX.Y.Z-x86_64-unknown-linux-gnu.tar.gz` |
+| Linux | ARM64 | `aarch64-unknown-linux-gnu` | `flashr-tui-vX.Y.Z-aarch64-unknown-linux-gnu.tar.gz` |
+| macOS | Intel | `x86_64-apple-darwin` | `flashr-tui-vX.Y.Z-x86_64-apple-darwin.tar.gz` |
+| macOS | Apple Silicon | `aarch64-apple-darwin` | `flashr-tui-vX.Y.Z-aarch64-apple-darwin.tar.gz` |
+| Windows | x86_64 | `x86_64-pc-windows-msvc` | `flashr-tui-vX.Y.Z-x86_64-pc-windows-msvc.zip` |
+
+Each release includes:
+- platform archives
+- `SHA256SUMS.txt`
+- optional signatures (`.asc` for GPG, `.cosign.sig` for cosign) when signing secrets are configured
+- SPDX SBOM (`flashr-tui-sbom.spdx.json`)
+
+Verify downloads:
+```bash
+sha256sum -c SHA256SUMS.txt
+```
+
+### Cargo Install (source build)
+
+`cargo install` remains supported as a source-based install path (not a prebuilt binary):
+```bash
+cargo install flashr-tui
+```
+
+### Package Manager Channels
+
+To maximize discoverability and one-command installs, publish releases to:
+- Homebrew tap (macOS/Linux)
+- AUR (Arch Linux)
+- Scoop and winget (Windows)
+- Nixpkgs (NixOS/Linux)
+
+Maintainer steps and release inputs are documented in [`docs/distribution.md`](docs/distribution.md).
+
+### Additional Mirrors
+
+Use a project website download page that links to GitHub Releases and optional mirrored assets (for example SourceForge, Cloudflare R2, or S3) for redundancy.
 
 ## Usage
 
