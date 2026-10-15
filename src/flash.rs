@@ -295,9 +295,7 @@ fn label_device_post_flash(
 
     // Try to discover partitions and apply a label.
     if let Some((label, tool, args)) = resolve_label_command(image, device) {
-        let status = elevated_command(&tool, elevator)
-            .args(&args)
-            .status();
+        let status = elevated_command(&tool, elevator).args(&args).status();
         return match status {
             Ok(s) if s.success() => Ok(Some(format!("Label set to {label}"))),
             Ok(_) => Ok(Some("Labeling failed".to_string())),
@@ -308,9 +306,7 @@ fn label_device_post_flash(
     // If lsblk didn't show partitions yet, retry now that partprobe has run.
     if !label_base.is_empty() {
         if let Some((label, tool, args)) = resolve_label_command(image, device) {
-            let status = elevated_command(&tool, elevator)
-                .args(&args)
-                .status();
+            let status = elevated_command(&tool, elevator).args(&args).status();
             return match status {
                 Ok(s) if s.success() => Ok(Some(format!("Label set to {label}"))),
                 Ok(_) => Ok(Some("Labeling failed".to_string())),
@@ -592,7 +588,9 @@ fn verify_flash(
     let mut remaining = iso_size;
     while remaining > 0 {
         let to_read = std::cmp::min(remaining as usize, buf.len());
-        let n = file.read(&mut buf[..to_read]).context("read ISO for hash")?;
+        let n = file
+            .read(&mut buf[..to_read])
+            .context("read ISO for hash")?;
         if n == 0 {
             break;
         }

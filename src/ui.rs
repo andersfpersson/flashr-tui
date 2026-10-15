@@ -95,8 +95,7 @@ fn handle_image_step(app: &mut App, key: KeyEvent) -> Option<AppExit> {
         }
         KeyCode::PageDown => {
             if !app.entries.is_empty() {
-                app.entry_selected =
-                    (app.entry_selected + PAGE_SIZE).min(app.entries.len() - 1);
+                app.entry_selected = (app.entry_selected + PAGE_SIZE).min(app.entries.len() - 1);
             }
         }
         KeyCode::Home => {
@@ -286,8 +285,7 @@ fn handle_convert_iso_step(app: &mut App, key: KeyEvent) -> Option<AppExit> {
                             app.status = "ISO converted to hybrid format.".to_string();
                             app.step = Step::Confirm;
                         } else {
-                            app.status =
-                                "Conversion ran but ISO is still not hybrid.".to_string();
+                            app.status = "Conversion ran but ISO is still not hybrid.".to_string();
                             app.step = Step::Error;
                         }
                     }
@@ -566,9 +564,7 @@ fn draw_convert_iso_step(frame: &mut ratatui::Frame, app: &App, area: ratatui::l
         Line::from(""),
         Line::from("Press 'y' to convert, 'n' to go back."),
     ]);
-    let block = Block::default()
-        .borders(Borders::ALL)
-        .title("Convert ISO");
+    let block = Block::default().borders(Borders::ALL).title("Convert ISO");
     let paragraph = Paragraph::new(text).block(block).wrap(Wrap { trim: false });
     frame.render_widget(paragraph, area);
 }
